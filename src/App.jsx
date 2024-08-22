@@ -1,11 +1,11 @@
 import "./App.css";
 import { Button } from "@/components/ui/button";
+import Navbar from "./components/Navbar/Navbar";
 
 function App() {
   return (
     <>
-      <h1>mithu</h1>
-      <Button>Button</Button>
+      <Navbar></Navbar>
     </>
   );
 }

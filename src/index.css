@@ -2,8 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-border {
+  border: 2px solid rgba(243, 71, 41, 0.753); /* Adjust the border width, style, and color as needed */
+}
+
 @layer base {
   :root {
+    --text-color: #f83002;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
