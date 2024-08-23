@@ -33,8 +33,12 @@ const Navbar = () => {
           </ul>
           {!user ? (
             <div className=" flex font-medium gap-2">
-              <Button variant="outline">Login</Button>
-              <Button variant="outline">Signup</Button>
+              <Link to="/login">
+                <Button variant="outline">Login</Button>
+              </Link>
+              <Link to="/signup">
+                <Button variant="outline">Signup</Button>
+              </Link>
             </div>
           ) : (
             <Popover>
