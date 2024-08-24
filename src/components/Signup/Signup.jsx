@@ -1,36 +1,103 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Button } from "../ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { USER_API_END_POINT } from "../Utils/Apis";
+import axios from "axios";
+import { toast } from "sonner";
 
 const Signup = () => {
+  const [input, setinput] = useState({
+    fullname: "",
+    email: "",
+    phonenumber: "",
+    password: "",
+    role: "",
+    file: "",
+  });
+  const navigate = useNavigate();
+
+  const changeeventhandler = (e) => {
+    setinput({ ...input, [e.target.name]: e.target.value });
+  };
+  const chageFilehandle = (e) => {
+    setinput({ ...input, file: e.target.files?.[0] });
+  };
+  const handle_submit = async (e) => {
+    e.preventDefault();
+    console.log(input);
+
+    try {
+      const response = await axios.post(
+        `${USER_API_END_POINT}/register`,
+        input,
+        {
+          headers: {
+            "Content-Type": "application/json", // Important for FormData
+          },
+        }
+      );
+      console.log(response.data);
+      if (response.data) {
+        toast.success(response.data.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error(error.response.data.message);
+      toast.error(error.response.data.message);
+    }
+  };
   return (
     <div>
       <Navbar></Navbar>
       <div className="custom-border flex items-center justify-center max-w-7xl mx-auto ">
         <form
-          action=""
+          onSubmit={handle_submit}
           className="w-1/2 border border-gray-200 rounded-md p-4 my-10"
         >
           <h1 className="font-bold text-xl mb-5">Sign UP</h1>
           <div className="my-2">
             <Label>Full Name</Label>
-            <Input type="text" placeholder="Your Name"></Input>
+            <Input
+              type="text"
+              name="fullname"
+              value={input.fullname}
+              onChange={changeeventhandler}
+              placeholder="Your Name"
+            ></Input>
           </div>
           <div className="my-2">
             <Label>Email</Label>
-            <Input type="text" placeholder="Example@gmail.com"></Input>
+            <Input
+              type="text"
+              name="email"
+              value={input.email}
+              onChange={changeeventhandler}
+              placeholder="Example@gmail.com"
+            ></Input>
           </div>
           <div className="my-2">
             <Label>Phone</Label>
-            <Input type="text" placeholder="Your Phone Number"></Input>
+            <Input
+              type="text"
+              name="phonenumber"
+              value={input.phonenumber}
+              onChange={changeeventhandler}
+              placeholder="Your Phone Number"
+            ></Input>
           </div>
           <div className="my-2">
             <Label>Password</Label>
-            <Input type="password" placeholder="Password"></Input>
+            <Input
+              type="password"
+              name="password"
+              value={input.password}
+              onChange={changeeventhandler}
+              placeholder="Password"
+            ></Input>
           </div>
           <div className="flex items-center justify-between">
             <RadioGroup
@@ -38,17 +105,30 @@ const Signup = () => {
               defaultValue="comfortable"
             >
               <div className="flex items-center space-x-2">
-                <input type="radio" name="role" value="student" />
+                <input
+                  checked={input.role === "Student"}
+                  onChange={changeeventhandler}
+                  type="radio"
+                  name="role"
+                  value="Student"
+                />
                 <Label htmlFor="r2">Student</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <input type="radio" name="role" value="recruter" />
+                <input
+                  type="radio"
+                  checked={input.role === "Recruiter"}
+                  onChange={changeeventhandler}
+                  name="role"
+                  value="Recruiter"
+                />
                 <Label htmlFor="r3">Recruter</Label>
               </div>
             </RadioGroup>
             <div className="flex items-center gap-2">
               <Label>Profile</Label>
               <Input
+                onChange={chageFilehandle}
                 accept="image/*"
                 type="file"
                 className="cursor-pointer"
