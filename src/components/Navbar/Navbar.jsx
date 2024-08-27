@@ -8,9 +8,10 @@ import { Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { LogOut, User2 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const user = false;
+  const user = useSelector((store) => store.Auth_slice.user);
   return (
     <div className="bg-white ">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
@@ -25,10 +26,10 @@ const Navbar = () => {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link>Jobs</Link>
+              <Link to="/jobs">Jobs</Link>
             </li>
             <li>
-              <Link>Browser</Link>
+              <Link to="/browser">Browser</Link>
             </li>
           </ul>
           {!user ? (

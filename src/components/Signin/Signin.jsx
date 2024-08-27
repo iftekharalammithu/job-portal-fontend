@@ -9,7 +9,7 @@ import { USER_API_END_POINT } from "../Utils/Apis";
 import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
-import { setloading } from "@/Redux/Auth_slice";
+import { setloading, setUser } from "@/Redux/Auth_slice";
 import { Loader2 } from "lucide-react";
 
 const Signin = () => {
@@ -38,8 +38,9 @@ const Signin = () => {
           "Content-Type": "application/json", // Important for FormData
         },
       });
-      console.log(response.data);
+      // console.log(response.data.user_data);
       if (response.data) {
+        dispatch(setUser(response.data.user_data));
         toast.success(response.data.message);
         navigate("/login");
       }
