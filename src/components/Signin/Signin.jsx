@@ -34,15 +34,18 @@ const Signin = () => {
     try {
       dispatch(setloading(true));
       const response = await axios.post(`${USER_API_END_POINT}/login`, input, {
+        withCredentials: true,
+
         headers: {
           "Content-Type": "application/json", // Important for FormData
         },
       });
-      // console.log(response.data.user_data);
+      console.log(response.data);
       if (response.data) {
         dispatch(setUser(response.data.user_data));
+
         toast.success(response.data.message);
-        navigate("/login");
+        navigate("/");
       }
     } catch (error) {
       console.error(error.response.data.message);

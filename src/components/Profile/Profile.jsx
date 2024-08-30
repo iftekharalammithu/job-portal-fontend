@@ -8,6 +8,7 @@ import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
 import UpdateProfileDialog from "./UpdateProfileDialog";
+import AppliedJobTable from "../AppliedJobTable/AppliedJobTable";
 
 // const skills = ["Html", "Css", "Javascript", "Reactjs"]
 const isResume = true;
@@ -15,7 +16,7 @@ const isResume = true;
 const Profile = () => {
   useGetAppliedJobs();
   const [open, setOpen] = useState(false);
-  const { user } = useSelector((store) => store.auth);
+  const { user } = useSelector((store) => store.Auth_slice);
 
   return (
     <div>
@@ -49,7 +50,7 @@ const Profile = () => {
           </div>
           <div className="flex items-center gap-3 my-2">
             <Contact />
-            <span>{user?.phoneNumber}</span>
+            <span>{user?.phone}</span>
           </div>
         </div>
         <div className="my-5">

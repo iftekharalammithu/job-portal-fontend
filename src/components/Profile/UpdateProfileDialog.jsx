@@ -14,15 +14,16 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
+import { setUser } from "@/Redux/Auth_slice";
 
 const UpdateProfileDialog = ({ open, setOpen }) => {
   const [loading, setLoading] = useState(false);
-  const { user } = useSelector((store) => store.auth);
+  const { user } = useSelector((store) => store.Auth_slice);
 
   const [input, setInput] = useState({
     fullname: user?.fullname || "",
     email: user?.email || "",
-    phoneNumber: user?.phoneNumber || "",
+    phonenumber: user?.phone || "",
     bio: user?.profile?.bio || "",
     skills: user?.profile?.skills?.map((skill) => skill) || "",
     file: user?.profile?.resume || "",
@@ -43,7 +44,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     const formData = new FormData();
     formData.append("fullname", input.fullname);
     formData.append("email", input.email);
-    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("phonenumber", input.phonenumber);
     formData.append("bio", input.bio);
     formData.append("skills", input.skills);
     if (input.file) {
@@ -79,7 +80,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     <div>
       <Dialog open={open}>
         <DialogContent
-          className="sm:max-w-[425px]"
+          className="sm:max-w-[425px] "
           onInteractOutside={() => setOpen(false)}
         >
           <DialogHeader>
@@ -119,8 +120,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 </Label>
                 <Input
                   id="number"
-                  name="number"
-                  value={input.phoneNumber}
+                  name="phonenumber"
+                  type="text"
+                  value={input.phonenumber}
                   onChange={changeEventHandler}
                   className="col-span-3"
                 />

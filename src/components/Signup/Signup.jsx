@@ -1,162 +1,168 @@
-import React, { useState } from "react";
+import { setloading } from "@/Redux/Auth_slice";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { USER_API_END_POINT } from "../Utils/Apis";
+import { toast } from "sonner";
 import Navbar from "../Navbar/Navbar";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
-import { Link, useNavigate } from "react-router-dom";
-import { USER_API_END_POINT } from "../Utils/Apis";
-import axios from "axios";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { setloading } from "@/Redux/Auth_slice";
 
 const Signup = () => {
-  const dispatch = useDispatch();
-
-  const [input, setinput] = useState({
+  const [input, setInput] = useState({
     fullname: "",
     email: "",
     phonenumber: "",
     password: "",
     role: "",
-    file: "",
+    profilepic: "",
   });
+  const { loading, user } = useSelector((store) => store.Auth_slice);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const changeeventhandler = (e) => {
-    setinput({ ...input, [e.target.name]: e.target.value });
+  const changeEventHandler = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
   };
-  const chageFilehandle = (e) => {
-    setinput({ ...input, file: e.target.files?.[0] });
+  const changeFileHandler = (e) => {
+    setInput({ ...input, profilepic: e.target.files?.[0] });
   };
-  const loading = useSelector((state) => state.Auth_slice.loading);
-  const handle_submit = async (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
+    const formData = new FormData(); //formdata object
+    formData.append("fullname", input.fullname);
+    formData.append("email", input.email);
+    formData.append("phonenumber", input.phoneNumber);
+    formData.append("password", input.password);
+    formData.append("role", input.role);
+    if (input.profilepic) {
+      formData.append("profilepic", input.profilepic);
+    }
 
     try {
       dispatch(setloading(true));
-      const response = await axios.post(
-        `${USER_API_END_POINT}/register`,
-        input,
-        {
-          headers: {
-            "Content-Type": "application/json", // Important for FormData
-          },
-        }
-      );
-      console.log(response.data);
-      if (response.data) {
-        toast.success(response.data.message);
+      const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      if (res.data.success) {
         navigate("/login");
+        toast.success(res.data.message);
       }
     } catch (error) {
-      console.error(error.response.data.message);
+      console.log(error);
       toast.error(error.response.data.message);
     } finally {
       dispatch(setloading(false));
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, []);
   return (
     <div>
-      <Navbar></Navbar>
-      <div className="custom-border flex items-center justify-center max-w-7xl mx-auto ">
+      <Navbar />
+      <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
-          onSubmit={handle_submit}
+          onSubmit={submitHandler}
           className="w-1/2 border border-gray-200 rounded-md p-4 my-10"
         >
-          <h1 className="font-bold text-xl mb-5">Sign UP</h1>
+          <h1 className="font-bold text-xl mb-5">Sign Up</h1>
           <div className="my-2">
             <Label>Full Name</Label>
             <Input
               type="text"
-              name="fullname"
               value={input.fullname}
-              onChange={changeeventhandler}
-              placeholder="Your Name"
-            ></Input>
+              name="fullname"
+              onChange={changeEventHandler}
+              placeholder="Full Name"
+            />
           </div>
           <div className="my-2">
             <Label>Email</Label>
             <Input
-              type="text"
-              name="email"
+              type="email"
               value={input.email}
-              onChange={changeeventhandler}
-              placeholder="Example@gmail.com"
-            ></Input>
+              name="email"
+              onChange={changeEventHandler}
+              placeholder="Your Email"
+            />
           </div>
           <div className="my-2">
-            <Label>Phone</Label>
+            <Label>Phone Number</Label>
             <Input
               type="text"
-              name="phonenumber"
-              value={input.phonenumber}
-              onChange={changeeventhandler}
-              placeholder="Your Phone Number"
-            ></Input>
+              value={input.phoneNumber}
+              name="phoneNumber"
+              onChange={changeEventHandler}
+              placeholder="+12058956235"
+            />
           </div>
           <div className="my-2">
             <Label>Password</Label>
             <Input
               type="password"
-              name="password"
               value={input.password}
-              onChange={changeeventhandler}
-              placeholder="Password"
-            ></Input>
+              name="password"
+              onChange={changeEventHandler}
+              placeholder="Your Password"
+            />
           </div>
           <div className="flex items-center justify-between">
-            <RadioGroup
-              className="flex items-center gap-4 my-5"
-              defaultValue="comfortable"
-            >
+            <RadioGroup className="flex items-center gap-4 my-5">
               <div className="flex items-center space-x-2">
-                <input
-                  checked={input.role === "Student"}
-                  onChange={changeeventhandler}
+                <Input
                   type="radio"
                   name="role"
                   value="Student"
+                  checked={input.role === "Student"}
+                  onChange={changeEventHandler}
+                  className="cursor-pointer"
                 />
-                <Label htmlFor="r2">Student</Label>
+                <Label htmlFor="r1">Student</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <input
+                <Input
                   type="radio"
-                  checked={input.role === "Recruiter"}
-                  onChange={changeeventhandler}
                   name="role"
                   value="Recruiter"
+                  checked={input.role === "Recruiter"}
+                  onChange={changeEventHandler}
+                  className="cursor-pointer"
                 />
-                <Label htmlFor="r3">Recruter</Label>
+                <Label htmlFor="r2">Recruiter</Label>
               </div>
             </RadioGroup>
             <div className="flex items-center gap-2">
               <Label>Profile</Label>
               <Input
-                onChange={chageFilehandle}
                 accept="image/*"
                 type="file"
+                onChange={changeFileHandler}
                 className="cursor-pointer"
-              ></Input>
+              />
             </div>
           </div>
           {loading ? (
-            <Button className=" w-full my-4">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
-              Please Wait...
+            <Button className="w-full my-4">
+              {" "}
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
             </Button>
           ) : (
-            <Button type="submit" className=" w-full my-4">
-              Sign Up
+            <Button type="submit" className="w-full my-4">
+              Signup
             </Button>
           )}
-          <span className="text-sm ">
+          <span className="text-sm">
             Already have an account?{" "}
-            <Link className="text-blue-600" to="/login">
+            <Link to="/login" className="text-blue-600">
               Login
             </Link>
           </span>
