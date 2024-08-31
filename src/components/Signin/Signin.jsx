@@ -29,7 +29,7 @@ const Signin = () => {
 
   const handle_submit = async (e) => {
     e.preventDefault();
-    console.log(input);
+    // console.log(input);
 
     try {
       dispatch(setloading(true));
@@ -40,7 +40,7 @@ const Signin = () => {
           "Content-Type": "application/json", // Important for FormData
         },
       });
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data) {
         dispatch(setUser(response.data.user_data));
 

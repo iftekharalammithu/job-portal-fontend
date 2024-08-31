@@ -63,7 +63,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         }
       );
       if (res.data.success) {
-        dispatch(setUser(res.data.user));
+        dispatch(setUser(res.data.user_data));
         toast.success(res.data.message);
       }
     } catch (error) {
@@ -94,7 +94,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 </Label>
                 <Input
                   id="name"
-                  name="name"
+                  name="fullname"
                   type="text"
                   value={input.fullname}
                   onChange={changeEventHandler}

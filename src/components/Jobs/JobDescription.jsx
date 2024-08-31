@@ -2,14 +2,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { JOB_API_END_POINT, USER_API_END_POINT } from "../Utils/Apis";
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "../Utils/Apis";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { setSingleJob } from "@/Redux/jobSlice";
 
 const JobDescription = () => {
   const { singleJob } = useSelector((store) => store.job);
-  const { user } = useSelector((store) => store.auth);
+  const { user } = useSelector((store) => store.Auth_slice);
   const isIntiallyApplied =
     singleJob?.applications?.some(
       (application) => application.applicant === user?._id
@@ -18,13 +19,17 @@ const JobDescription = () => {
 
   const params = useParams();
   const jobId = params.id;
+  // console.log(jobId);
   const dispatch = useDispatch();
 
   const applyJobHandler = async () => {
     try {
-      const res = await axios.get(`${USER_API_END_POINT}/apply/${jobId}`, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${APPLICATION_API_END_POINT}/applyJob/${jobId}`,
+        {
+          withCredentials: true,
+        }
+      );
 
       if (res.data.success) {
         setIsApplied(true); // Update the local state
@@ -44,12 +49,13 @@ const JobDescription = () => {
   useEffect(() => {
     const fetchSingleJob = async () => {
       try {
-        const res = await axios.get(
+        const res = await axios.post(
           `${JOB_API_END_POINT}/getJobById/${jobId}`,
           {
             withCredentials: true,
           }
         );
+        console.log(res.data);
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job));
           setIsApplied(
